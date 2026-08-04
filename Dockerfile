@@ -65,18 +65,8 @@ RUN if [ "$PIP_USE_OFFICIAL" = "1" ]; then \
 # Now copy the rest of the codebase into the image
 COPY . .
 
-# Expose the port the app runs on
-EXPOSE 8501
+# Expose the port we will use on Railway
+EXPOSE 8080
 
-# 容器内部必须监听 0.0.0.0，宿主机仍通过 docker 端口映射限制为 127.0.0.1。
-# browser.serverAddress 只决定浏览器展示的访问地址，不能替代 server.address。
-CMD ["streamlit", "run", "./webui/Main.py", "--server.address=0.0.0.0", "--server.port=8501", "--browser.serverAddress=127.0.0.1", "--server.enableCORS=True", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False"]
-
-# 1. Build the Docker image using the following command
-# docker build -t moneyprinterturbo .
-
-# 2. Run the Docker container using the following command
-## For Linux or MacOS:
-# docker run -v $(pwd)/config.toml:/MoneyPrinterTurbo/config.toml -v $(pwd)/storage:/MoneyPrinterTurbo/storage -p 127.0.0.1:8501:8501 moneyprinterturbo
-## For Windows:
-# docker run -v ${PWD}/config.toml:/MoneyPrinterTurbo/config.toml -v ${PWD}/storage:/MoneyPrinterTurbo/storage -p 127.0.0.1:8501:8501 moneyprinterturbo
+# Force Streamlit WebUI to start on port 8080
+CMD ["streamlit", "run", "./webui/Main.py", "--server.port=8080", "--server.address=0.0.0.0", "--browser.serverAddress=0.0.0.0", "--server.enableCORS=true", "--server.headless=true", "--browser.gatherUsageStats=False", "--client.toolbarMode=minimal", "--logger.hideWelcomeMessage=True", "--server.showEmailPrompt=False"]
